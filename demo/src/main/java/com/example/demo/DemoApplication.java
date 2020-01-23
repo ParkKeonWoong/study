@@ -17,9 +17,9 @@ public class DemoApplication {
 
 	UserDao dao = new UserDao();
 	User user = new User();
-	user.setId("whiteship2");
-	user.setName("back2");
-	user.setPassword("married2");
+	user.setId("whiteship3");
+	user.setName("back3");
+	user.setPassword("married3");
 	dao.add(user);
 	System.out.println(user.getId() + " 등록 성공 ");
 	User user2 = dao.get(user.getId());
