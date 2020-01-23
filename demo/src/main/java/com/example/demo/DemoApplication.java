@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.service.NUserDao;
 import com.example.demo.service.UserDao;
 
 import java.sql.SQLException;
@@ -16,11 +15,11 @@ public class DemoApplication {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException{
 		SpringApplication.run(DemoApplication.class, args);
 
-	UserDao dao = new NUserDao();
+	UserDao dao = new UserDao();
 	User user = new User();
-	user.setId("whiteship4");
-	user.setName("back4");
-	user.setPassword("married4");
+	user.setId("whiteship5");
+	user.setName("back5");
+	user.setPassword("married5");
 	dao.add(user);
 	System.out.println(user.getId() + " 등록 성공 ");
 	User user2 = dao.get(user.getId());
