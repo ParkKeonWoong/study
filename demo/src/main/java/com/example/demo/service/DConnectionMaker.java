@@ -17,9 +17,7 @@ public class DConnectionMaker implements ConnectionMaker {
         return c;
     }
 
-	public Connection makeNewConnection() {
-		return null;
-	}
+	
 
     
 }

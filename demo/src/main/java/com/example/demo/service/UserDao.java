@@ -9,15 +9,15 @@ import com.example.demo.domain.User;
 
 public class UserDao {
 
-    private DConnectionMaker dConnectionMaker;
+    private ConnectionMaker connectionMaker;
 
-    public UserDao(){
-        dConnectionMaker = new DConnectionMaker();
+    public UserDao(ConnectionMaker connectionMaker){
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
        
-        final Connection c = dConnectionMaker.makeConnection();
+        final Connection c = connectionMaker.makeConnection();
         final PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 
         ps.setString(1, user.getId());
@@ -32,7 +32,7 @@ public class UserDao {
 
     public User get(final String id) throws ClassNotFoundException, SQLException {
        
-        final Connection c = dConnectionMaker.makeConnection();
+        final Connection c = connectionMaker.makeConnection();
         final PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 
         ps.setString(1, id);
