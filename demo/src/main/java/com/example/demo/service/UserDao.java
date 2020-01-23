@@ -1,14 +1,13 @@
 package com.example.demo.service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.example.demo.domain.User;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
        
@@ -47,10 +46,6 @@ public class UserDao {
         return user;
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException{
-        Class.forName("org.mariadb.jdbc.Driver");
-        Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/test", "root", "p@ssw0rd");
-
-        return c;
-    }
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }
+
