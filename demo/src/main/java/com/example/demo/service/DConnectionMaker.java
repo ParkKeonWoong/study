@@ -5,14 +5,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * SimpleConnectionMaker
+ * DConnectionMaker
  */
-public class SimpleConnectionMaker {
+public class DConnectionMaker implements ConnectionMaker {
 
-    public Connection makeNewConnection() throws ClassNotFoundException, SQLException{
+    @Override
+    public Connection makeConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
         Connection c = DriverManager.getConnection("jdbc:mariadb://localhost:3306/test", "root", "p@ssw0rd");
     
         return c;
     }
+
+	public Connection makeNewConnection() {
+		return null;
+	}
+
+    
 }

@@ -17,7 +17,7 @@ public class DemoApplication {
 
 	UserDao dao = new UserDao();
 	User user = new User();
-	user.setId("whiteship5");
+	user.setId("whiteship6");
 	user.setName("back5");
 	user.setPassword("married5");
 	dao.add(user);
