@@ -7,18 +7,12 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-
 import com.example.demo.domain.User;
 
 public class UserDao {
-
     private DataSource dataSource;
 
-    public DataSource getDataSource() {
-        return this.dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
     }
     

@@ -17,42 +17,37 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 public class DemoApplication {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException{
-		SpringApplication.run(DemoApplication.class, args);
 
-		DaoFactory factory = new DaoFactory();
+		 DaoFactory factory = new DaoFactory();
+		 UserDao dao1 = factory.userDao();
+		 UserDao dao2 = factory.userDao();
+		 UserDao dao5 = factory.userDao();
 
-		
-		UserDao dao1 = factory.userDao();
-		UserDao dao2 = factory.userDao();
-		UserDao dao5 = factory.userDao();
+	 	System.out.println(dao1);
+		 System.out.println(dao2);
 
-		System.out.println(dao1);
-		System.out.println(dao2);
-	
-		GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-		UserDao dao = context.getBean("userDao",UserDao.class);
-		UserDao dao3 = context.getBean("userDao",UserDao.class);
-		UserDao dao4 = context.getBean("userDao",UserDao.class);
-		System.out.println(dao3);
-		System.out.println(dao4);
+		 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+		 UserDao dao = context.getBean("userDao",UserDao.class);
+		 UserDao dao3 = context.getBean("userDao",UserDao.class);
+		 UserDao dao4 = context.getBean("userDao",UserDao.class);
 
-		
-		
-		User user = new User();
-		user.setId("whitesh11");
-		user.setName("back9");
-		user.setPassword("married9");
-		dao.add(user);
-		System.out.println(user.getId() + " 등록 성공 ");
-		User user2 = dao.get(user.getId());
-		System.out.println(user2.getName());
-		System.out.println(user2.getPassword());
-		System.out.println(user2.getId() + " 조회 성공 ");
+		 System.out.println(dao3);
+		 System.out.println(dao4);
+
+		 User user = new User();
+		 user.setId("whitesh2");
+		 user.setName("back9");
+		 user.setPassword("married9");
+		 dao.add(user);
+		 System.out.println(user.getId() + " 등록 성공 ");
+		 User user2 = dao.get(user.getId());
+		 System.out.println(user2.getName());
+		 System.out.println(user2.getPassword());
+		 System.out.println(user2.getId() + " 조회 성공 ");
 		System.out.println( " 조회 성공 ");
-
-
-
-		context.close();
+	 	CountingConnectionMaker ccm = context.getBean("connectionMaker",CountingConnectionMaker.class);
+		 System.out.print("Counting = "+ccm.getCounter());
+	 	context.close();
 	}
 
 }

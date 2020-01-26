@@ -1,0 +1,53 @@
+[33mcommit 6037d54fcf6defc19c657a0c768af7503a73360f[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Mon Jan 27 04:26:28 2020 +0900
+
+    applicationContext.xml  적용
+
+[33mcommit 9ea35bdbb5ddf88f0bb6b60067a1737319edce5d[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Sat Jan 25 01:53:29 2020 +0900
+
+    UserDao_CountingConnection
+
+[33mcommit 3f93e48f0ec1269803cfc421193ea7b85c6034e3[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 15:47:39 2020 +0900
+
+    Annotation context getbean 사용
+
+[33mcommit b265150bf296e1d8ac5d16591c143101519cf14e[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 14:52:17 2020 +0900
+
+    UserDao_Main으로 클라이언트로 관계설정 책임 이관
+
+[33mcommit 8ff4a4f3baae92961c7a86b898923777687b0474[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 14:30:28 2020 +0900
+
+    UserDao_인터페이스 사용
+
+[33mcommit 3b0b8d81ac7b3031a077b602feba4cb91cb3fa89[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 14:11:53 2020 +0900
+
+    UserDao_SimpleConnectionMaker 다른 클래스 생성
+
+[33mcommit 2e0511fa63f432907a0f0e0581c95a559eb33cac[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 13:41:35 2020 +0900
+
+    UserDao_추상화인터페이스 사용
+
+[33mcommit 5fcd9984390903ca322d4f402d2d38b62fe4c9d7[m
+Author: parkkeon <parkkeonwoong@gmail.com>
+Date:   Thu Jan 23 13:31:58 2020 +0900
+
+    userdao_connection 분리
+
+[33mcommit 99b249fb1d6ddb4d50844290cac2e3ab93ca0f64[m
+Author: parkkeonwoong <parkkeonwoong@gmail.com>
+Date:   Tue Jan 21 10:06:50 2020 +0900
+
+    study1
