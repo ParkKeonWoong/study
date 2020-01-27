@@ -9,8 +9,11 @@ import javax.sql.DataSource;
 
 import com.example.demo.domain.User;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+
 public class UserDao {
     private DataSource dataSource;
+    private User user=null;
 
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
@@ -19,9 +22,33 @@ public class UserDao {
 
     
 
-  
+    public int getCount() throws SQLException {
+        Connection c = dataSource.getConnection();
 
-    public void add(final User user) throws ClassNotFoundException, SQLException {
+        PreparedStatement ps = c.prepareStatement("select count(*) from users");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        c.close();
+
+        return count;
+    }
+
+    public void deleteAll() throws SQLException {
+        final Connection c = dataSource.getConnection();
+        final PreparedStatement ps = c.prepareStatement("delete from users");
+
+        ps.executeUpdate();
+
+        ps.close();
+        c.close();
+    }
+
+    public void add(final User user) throws SQLException {
        
         final Connection c = dataSource.getConnection();
         final PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
@@ -36,8 +63,8 @@ public class UserDao {
         c.close();
     }
 
-    public User get(final String id) throws ClassNotFoundException, SQLException {
-       
+    public User get(final String id) throws SQLException {
+        
         final Connection c = dataSource.getConnection();
         final PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 
@@ -45,17 +72,18 @@ public class UserDao {
 
         final ResultSet rs = ps.executeQuery();
 
-        rs.next();
-        final User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+        if(rs.next()) {
+            this.user = new User(rs.getString("id"),rs.getString("name"),rs.getString("password"));
+        }
+
+        
 
         rs.close();
         ps.close();
         c.close(); 
         
-        return user;
+        if (this.user == null) throw new EmptyResultDataAccessException(1);
+        return this.user;
     }
 
     
