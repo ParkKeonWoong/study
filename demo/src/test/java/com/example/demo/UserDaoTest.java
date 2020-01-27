@@ -11,29 +11,23 @@ import javax.sql.DataSource;
 
 import com.example.demo.domain.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @SpringBootTest
-@ContextConfiguration(locations = "/applicationContext.xml")
-@DirtiesContext
 public class UserDaoTest {
 
-	@Autowired
-	@Qualifier("userDao")
 	private UserDao dao;
 
 	@BeforeEach
 	public void setUp(){
-		System.out.println(this.dao);
-		System.out.println(this);
+
+		dao = new UserDao();
 		DataSource dataSource = new SingleConnectionDataSource("jdbc:mariadb://localhost:3306/test2", "root", "p@ssw0rd", true);
 		dao.setDataSource(dataSource);
 	}
