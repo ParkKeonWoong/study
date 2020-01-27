@@ -11,25 +11,38 @@ import javax.sql.DataSource;
 
 import com.example.demo.domain.*;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.apache.catalina.core.ApplicationContext;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
 
+
+	@Autowired
+	@Qualifier("userDao")
 	private UserDao dao;
 
-	@BeforeEach
-	public void setUp(){
 
-		dao = new UserDao();
-		DataSource dataSource = new SingleConnectionDataSource("jdbc:mariadb://localhost:3306/test2", "root", "p@ssw0rd", true);
-		dao.setDataSource(dataSource);
+	@BeforeEach
+	public void setUp(GenericApplicationContext ctx){
+		
+		System.out.println("this is context = " + ctx.getBean("userDao"));
+		System.out.println(this.dao);
+		System.out.println(this);
 	}
 
     @Test
