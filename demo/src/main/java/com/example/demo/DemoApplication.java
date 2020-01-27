@@ -8,10 +8,8 @@ import java.sql.SQLException;
 
 import com.example.demo.domain.*;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -21,9 +19,7 @@ public class DemoApplication {
 		 DaoFactory factory = new DaoFactory();
 		 UserDao dao1 = factory.userDao();
 		 UserDao dao2 = factory.userDao();
-		 UserDao dao5 = factory.userDao();
-
-	 	System.out.println(dao1);
+		 System.out.println(dao1);
 		 System.out.println(dao2);
 
 		 AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);

@@ -1,8 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.service.ConnectionMaker;
-import com.example.demo.service.DConnectionMaker;
-import com.example.demo.service.DaoFactory;
 import com.example.demo.service.UserDao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,29 +7,40 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import com.example.demo.domain.*;
 
-import org.apache.catalina.core.ApplicationContext;
-import org.assertj.core.api.Assertions;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-
-
 @SpringBootTest
+@ContextConfiguration(locations = "/applicationContext.xml")
+@DirtiesContext
 public class UserDaoTest {
+
+	@Autowired
+	@Qualifier("userDao")
+	private UserDao dao;
+
+	@BeforeEach
+	public void setUp(){
+		System.out.println(this.dao);
+		System.out.println(this);
+		DataSource dataSource = new SingleConnectionDataSource("jdbc:mariadb://localhost:3306/test2", "root", "p@ssw0rd", true);
+		dao.setDataSource(dataSource);
+	}
 
     @Test
     public void getUserFailure() throws SQLException {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-		
-		UserDao dao = context.getBean("userDao",UserDao.class);
-
+	
 		dao.deleteAll();
 		User user = new User("1234","name","password");
 		dao.add(user);
@@ -43,7 +51,6 @@ public class UserDaoTest {
 		assertThrows(EmptyResultDataAccessException.class, () ->
 		dao.get("654"));
 
-		context.close();
 	}
 	@Test
 	void testExpectedException() {
@@ -57,11 +64,10 @@ public class UserDaoTest {
 
 	@Test
     public void addAndGet() throws SQLException, ClassNotFoundException{
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-	UserDao dao = context.getBean("userDao", UserDao.class);
+   
 	dao.deleteAll();
 	assertEquals(dao.getCount(),0);
-	User user = new User("1234","name","password");
+	User user = new User("4567","name","password");
 	dao.add(user);
 	assertEquals(dao.getCount(),1);
     User user2 = dao.get(user.getId());
@@ -69,15 +75,10 @@ public class UserDaoTest {
 	assertEquals(user.getName(), user2.getName());
 	assertEquals(user.getPassword(), user2.getPassword());
 
-    context.close();
-
 	}
 
 	@Test
     public void count() throws SQLException {
-	
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-		UserDao dao = context.getBean("userDao", UserDao.class);
 		
 		User user1 = new User("gumme","Park1","springno1");
 		User user2 = new User("gumme2","Park2","springno2");
@@ -93,8 +94,6 @@ public class UserDaoTest {
 		dao.add(user3);
 		assertEquals(dao.getCount(),3);
 			
-		context.close();
-
 	}
 
 }
