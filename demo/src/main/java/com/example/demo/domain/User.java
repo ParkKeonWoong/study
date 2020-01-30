@@ -1,9 +1,5 @@
 package com.example.demo.domain;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 public class User {
 
     String id;
