@@ -11,9 +11,11 @@ import com.example.demo.domain.User;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public class UserDao {
+public abstract class UserDao {
     private DataSource dataSource;
     private User user=null;
+
+    abstract protected PreparedStatement makePreparedStatement (Connection c) throws SQLException;
 
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
@@ -38,14 +40,34 @@ public class UserDao {
         return count;
     }
 
+    
+
     public void deleteAll() throws SQLException {
-        final Connection c = dataSource.getConnection();
-        final PreparedStatement ps = c.prepareStatement("delete from users");
+        
+        Connection c = null;
+        PreparedStatement ps = null;
 
-        ps.executeUpdate();
+        try {
+            c = dataSource.getConnection();
+            ps = makePreparedStatement(c);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
 
-        ps.close();
-        c.close();
+        }
     }
 
     public void add(final User user) throws SQLException {
@@ -64,26 +86,51 @@ public class UserDao {
     }
 
     public User get(final String id) throws SQLException {
+        ResultSet rs = null;
+        Connection c = null;
+        PreparedStatement ps = null;
         
-        final Connection c = dataSource.getConnection();
-        final PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
+        try {  
+            c = dataSource.getConnection();
+            ps = c.prepareStatement("select * from users where id = ?");
 
-        ps.setString(1, id);
+            ps.setString(1, id);
 
-        final ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
-        if(rs.next()) {
-            this.user = new User(rs.getString("id"),rs.getString("name"),rs.getString("password"));
+            if(rs.next()) {
+                this.user = new User(rs.getString("id"),rs.getString("name"),rs.getString("password"));
+            }
+            if (this.user == null) throw new EmptyResultDataAccessException(1);
+            return this.user;            
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+            
         }
+        
 
         
 
-        rs.close();
-        ps.close();
-        c.close(); 
         
-        if (this.user == null) throw new EmptyResultDataAccessException(1);
-        return this.user;
     }
 
     

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.service.UserDao;
+import com.example.demo.service.UserDaoDelateAll;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,7 +35,12 @@ public class UserDaoTest {
 
 	@Autowired
 	@Qualifier("userDao")
-	private UserDao dao;
+	private UserDaoDelateAll dao;
+	
+	//@Autowired
+	//@Qualifier("userDao2")
+	//private UserDaoDelateAll dao2;
+	
 
 
 	@BeforeEach
@@ -44,7 +50,17 @@ public class UserDaoTest {
 		System.out.println(this.dao);
 		System.out.println(this);
 	}
+	@Test
+	public void deleteCheck() throws SQLException {
+		
+		dao.deleteAll();
+		User user = new User("1234","name","password");
+		dao.add(user);
+		System.out.println(dao.getCount());
+		dao.deleteAll();
+		System.out.println(dao.getCount());
 
+	}
     @Test
     public void getUserFailure() throws SQLException {
 	
@@ -77,7 +93,9 @@ public class UserDaoTest {
 	User user = new User("4567","name","password");
 	dao.add(user);
 	assertEquals(dao.getCount(),1);
-    User user2 = dao.get(user.getId());
+	User user2 = dao.get(user.getId());
+	
+	System.out.println("this is Test" +dao.get("4567"));
 
 	assertEquals(user.getName(), user2.getName());
 	assertEquals(user.getPassword(), user2.getPassword());

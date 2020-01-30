@@ -16,8 +16,13 @@
         <property name="password" value="p@ssw0rd" />
     </bean>
 
+    <!-- <bean id="userDao" -->
+        <!-- class="com.example.demo.service.UserDao"> -->
+        <!-- <property name="dataSource" ref="dataSource" /> -->
+    <!-- </bean> -->
+
     <bean id="userDao"
-        class="com.example.demo.service.UserDao">
+        class="com.example.demo.service.UserDaoDelateAll">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
