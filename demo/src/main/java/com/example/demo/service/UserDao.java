@@ -59,17 +59,22 @@ public class UserDao {
 
 
     public void deleteAll() throws SQLException {
+        jdbcContextWithStatementStrategy(new StatementStrategy(){
         
-        StatementStrategy st = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(st);
+            @Override
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps = c.prepareStatement("delete from users");
+                return ps;
+            }
+        });
         
     }
 
     public void add(final User user) throws SQLException {
-        class AddStatement implements StatementStrategy {
+        jdbcContextWithStatementStrategy(new StatementStrategy(){
 
+            @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-        
                 PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
         
                 ps.setString(1, user.getId());
@@ -78,10 +83,7 @@ public class UserDao {
         
                 return ps;
             }
-        }
-       
-        StatementStrategy st = new AddStatement();
-        jdbcContextWithStatementStrategy(st);
+        });
     }
 
     public User get(final String id) throws SQLException {
