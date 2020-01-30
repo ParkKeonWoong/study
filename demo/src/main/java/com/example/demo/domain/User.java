@@ -1,14 +1,18 @@
 package com.example.demo.domain;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class User {
 
     String id;
     String name;
     String password;
 
-    public User(){
-        
-    }
+    
+
+    public User(){}
 
     public User(String id, String name, String password ){
         this.id= id;

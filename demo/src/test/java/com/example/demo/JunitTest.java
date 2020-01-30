@@ -55,12 +55,6 @@ public class JunitTest {
         System.out.println(contextObject);
     }
 
-    @Test  
-    public void test4(){
-
-       for (JunitTest junitTest : testObjects) {
-        System.out.println(testObjects.toArray());
-       
-    }
-    }
+    
+    
 }
