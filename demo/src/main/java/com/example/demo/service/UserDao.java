@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -12,20 +13,17 @@ import com.example.demo.domain.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 public class UserDao {
     private DataSource dataSource;
-    private User user=null;
+    private User user = null;
 
     private JdbcContext jdbcContext;
 
     private JdbcTemplate jdbcTemplate;
 
-    
-
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcContext = new JdbcContext();
@@ -33,33 +31,20 @@ public class UserDao {
     }
 
     private void executeSql(final String query) throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(new StatementStrategy(){
-        
+        this.jdbcContext.workWithStatementStrategy(new StatementStrategy() {
+
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
                 PreparedStatement ps = c.prepareStatement(query);
                 return ps;
             }
         });
-        
-    }
-    
 
-    
+    }
 
     public int getCount() throws SQLException {
-        Connection c = dataSource.getConnection();
 
-        PreparedStatement ps = c.prepareStatement("select count(*) from users");
-
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
-
-        rs.close();
-        ps.close();
-        c.close();
-
+        int count = jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
         return count;
     }
 

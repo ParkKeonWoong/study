@@ -98,7 +98,7 @@ public class UserDaoTest {
 		assertEquals(dao.getCount(),2);
 		dao.add(user3);
 		assertEquals(dao.getCount(),3);
-			
+		
 	}
 
 }
