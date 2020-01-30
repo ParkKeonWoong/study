@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import com.example.demo.domain.User;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 
 
@@ -19,13 +21,14 @@ public class UserDao {
 
     private JdbcContext jdbcContext;
 
+    private JdbcTemplate jdbcTemplate;
+
     
 
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
-
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcContext = new JdbcContext();
-
         this.jdbcContext.setDataSource(dataSource);
     }
 
@@ -62,23 +65,25 @@ public class UserDao {
 
 
     public void deleteAll() throws SQLException {
-        executeSql("delete from users");
+        this.jdbcTemplate.execute("delete from users");
     }
 
     public void add(final User user) throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(new StatementStrategy(){
-
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
+        this.jdbcTemplate.batchUpdate("insert into users(id, name, password) values(?,?,?)", new BatchPreparedStatementSetter(){
         
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setString(1, user.getId());
                 ps.setString(2, user.getName());
                 ps.setString(3, user.getPassword());
+            }
         
-                return ps;
+            @Override
+            public int getBatchSize() {
+                return 1;
             }
         });
+
     }
 
     public User get(final String id) throws SQLException {
