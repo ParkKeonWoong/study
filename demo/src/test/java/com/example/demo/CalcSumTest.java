@@ -22,9 +22,11 @@ public class CalcSumTest {
         Calculator calculator = new Calculator();
         int sum = calculator.calcSum(getClass().getResource("numbers.txt").getPath());
         int sum2 = calculator.calcMulti(getClass().getResource("numbers.txt").getPath());
+        String sum3 = calculator.concatenate(getClass().getResource("numbers.txt").getPath());
         System.out.println(sum);
         assertEquals(sum, 10);
         System.out.println(sum2);
+        System.out.println(sum3);
         assertEquals(sum2, 24);
     }
 
