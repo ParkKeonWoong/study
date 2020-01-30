@@ -77,7 +77,10 @@ public class UserDaoTest {
 	User user = new User("4567","name","password");
 	dao.add(user);
 	assertEquals(dao.getCount(),1);
-    User user2 = dao.get(user.getId());
+	User user2 = dao.get(user.getId());
+	System.out.println(user.getId()+ user2.getId());
+	System.out.println(user.getName()+ user2.getName());
+	System.out.println(user.getPassword()+ user2.getPassword());
 
 	assertEquals(user.getName(), user2.getName());
 	assertEquals(user.getPassword(), user2.getPassword());
