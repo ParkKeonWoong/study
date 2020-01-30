@@ -28,6 +28,18 @@ public class UserDao {
 
         this.jdbcContext.setDataSource(dataSource);
     }
+
+    private void executeSql(final String query) throws SQLException {
+        this.jdbcContext.workWithStatementStrategy(new StatementStrategy(){
+        
+            @Override
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps = c.prepareStatement(query);
+                return ps;
+            }
+        });
+        
+    }
     
 
     
@@ -50,15 +62,7 @@ public class UserDao {
 
 
     public void deleteAll() throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(new StatementStrategy(){
-        
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("delete from users");
-                return ps;
-            }
-        });
-        
+        executeSql("delete from users");
     }
 
     public void add(final User user) throws SQLException {
