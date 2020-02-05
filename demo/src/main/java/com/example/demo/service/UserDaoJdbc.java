@@ -10,36 +10,38 @@ import javax.sql.DataSource;
 
 import com.example.demo.domain.User;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class UserDaoJdbc implements UserDao  {
+public class UserDaoJdbc implements UserDao {
+    private DataSource dataSource;
+    private User user = null;
+
+    private JdbcContext jdbcContext;
+
     private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setDataSource(dataSource);
     }
 
-    private RowMapper<User> userMapper = new RowMapper<User>(){
+    private RowMapper<User> userMapper = new RowMapper<User>() {
 
         @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
+			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                User user = new User();
                 user.setId(rs.getString("id"));
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
-
                 return user;
-        }
-        
-    } ;
-
-    public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
-    }
-   
-
+			}
+    
+    };
 
     public int getCount() throws SQLException {
 
@@ -47,8 +49,8 @@ public class UserDaoJdbc implements UserDao  {
         return count;
     }
 
-    public void deleteAll() throws SQLException {
 
+    public void deleteAll() throws SQLException {
         this.jdbcTemplate.execute("delete from users");
     }
 
@@ -67,13 +69,62 @@ public class UserDaoJdbc implements UserDao  {
                 return 1;
             }
         });
+
     }
 
     public User get(final String id) throws SQLException {
+        ResultSet rs = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        
+        try {  
+            c = dataSource.getConnection();
+            ps = c.prepareStatement("select * from users where id = ?");
 
-        return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[] {id}, this.userMapper);        
-    }
+            ps.setString(1, id);
 
-    
-}
+            rs = ps.executeQuery();
+
+            if(rs.next()) {
+                this.user = new User(rs.getString("id"),rs.getString("name"),rs.getString("password"));
+            }
+            if (this.user == null) throw new EmptyResultDataAccessException(1);
+            return this.user;            
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }   
+
+        }   
+
+
+
+
+
+    }   
+
+    @Override   
+    public List<User> getAll() {    
+        return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+}   
+
+
+}   
 

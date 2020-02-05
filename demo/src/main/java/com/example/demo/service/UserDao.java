@@ -6,7 +6,7 @@ import java.util.List;
 import com.example.demo.domain.User;
 
 /**
- * IUserDao
+ * UserDao
  */
 public interface UserDao {
 
