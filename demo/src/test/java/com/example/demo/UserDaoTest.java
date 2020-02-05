@@ -4,6 +4,7 @@ import com.example.demo.service.UserDao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,6 +40,21 @@ public class UserDaoTest {
 		System.out.println("this is context = " + ctx.getBean("userDao"));
 		System.out.println(this.dao);
 		System.out.println(this);
+	}
+
+	@Test
+	public void duplicateKey() {
+		Exception exception = assertThrows(DataAccessException.class, () -> {
+			dao.deleteAll();
+		User user = new User("1234", "name", "password");
+		dao.add(user);
+		dao.add(user);
+		}); 
+		
+		System.out.println(exception.getMessage());
+		assertTrue(exception.getMessage().contains("Duplicate entry"));
+
+		
 	}
 
     @Test
