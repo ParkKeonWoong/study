@@ -28,6 +28,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
 
+	User user1;
+	User user2;
+	User user3;
 
 	@Autowired
 	@Qualifier("userDao")
@@ -36,17 +39,16 @@ public class UserDaoTest {
 
 	@BeforeEach
 	public void setUp(GenericApplicationContext ctx){
-		
-		System.out.println("this is context = " + ctx.getBean("userDao"));
-		System.out.println(this.dao);
-		System.out.println(this);
+		this.user1 = new User("gumme1","Park1","springno1" ,Level.BASIC, 1 ,0 );
+		this.user2 = new User("gumme2","Park2","springno2",Level.SILVER, 55,10 );
+		this.user3 = new User("gumme3","Park3","springno3",Level.GOLD, 100,40);
 	}
 
 	@Test
 	public void duplicateKey() {
 		Exception exception = assertThrows(DataAccessException.class, () -> {
 			dao.deleteAll();
-		User user = new User("1234", "name", "password");
+		User user = this.user1;
 		dao.add(user);
 		dao.add(user);
 		}); 
@@ -61,11 +63,11 @@ public class UserDaoTest {
     public void getUserFailure() throws SQLException {
 	
 		dao.deleteAll();
-		User user = new User("1234","name","password");
+		User user = this.user1;
 		dao.add(user);
 		
 
-		System.out.println(dao.get("1234").getId());
+		System.out.println(dao.get("gumme1").getId());
 
 	}
 	@Test
@@ -83,7 +85,7 @@ public class UserDaoTest {
    
 	dao.deleteAll();
 	assertEquals(dao.getCount(),0);
-	User user = new User("4567","name","password");
+	User user = this.user1;
 	dao.add(user);
 	// assertEquals(dao.getCount(),1);
 	dao.deleteAll();
@@ -102,10 +104,6 @@ public class UserDaoTest {
 	@Test
     public void count() throws SQLException {
 		
-		User user1 = new User("gumme","Park1","springno1");
-		User user2 = new User("gumme2","Park2","springno2");
-		User user3 = new User("gumme3","Park3","springno3");
-		
 		dao.deleteAll();
 		assertEquals(dao.getCount(),0);
 
@@ -120,10 +118,6 @@ public class UserDaoTest {
 
 	@Test
     public void getAll() throws SQLException {
-		
-		User user1 = new User("gyumme","Park1","springno1");
-		User user2 = new User("leegw700","Park2","springno2");
-		User user3 = new User("bumjin","Park3","springno3");
 		
 		dao.deleteAll();
 
@@ -140,9 +134,9 @@ public class UserDaoTest {
 		dao.add(user3);
 		List<User> users3 = dao.getAll();
 		assertEquals(users3.size(), 3);
-		checkSameUser(user3, users3.get(0));
-		checkSameUser(user1, users3.get(1));
-		checkSameUser(user2, users3.get(2));
+		checkSameUser(user1, users3.get(0));
+		checkSameUser(user2, users3.get(1));
+		checkSameUser(user3, users3.get(2));
 
 		List<User> users4 = dao.getAll();
 
@@ -160,6 +154,9 @@ public class UserDaoTest {
 		assertEquals(user1.getId(), user2.getId());
 		assertEquals(user1.getName(), user2.getName());
 		assertEquals(user1.getPassword(), user2.getPassword());
+		assertEquals(user1.getLevel(), user2.getLevel());
+		assertEquals(user1.getLogin(), user2.getLogin());
+		assertEquals(user1.getRecommend(), user2.getRecommend());
 	}
 
 }
