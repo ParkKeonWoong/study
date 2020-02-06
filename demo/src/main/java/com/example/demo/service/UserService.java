@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.demo.domain.Level;
 import com.example.demo.domain.User;
 
+
 /**
  * UserService
  */
@@ -42,6 +43,13 @@ public class UserService {
 
         }
     }
+
+	public void add(User user) {
+        if (user.getLevel() == null){
+            user.setLevel(Level.BASIC);
+        }
+        userDao.add(user);
+	}
 
     
 

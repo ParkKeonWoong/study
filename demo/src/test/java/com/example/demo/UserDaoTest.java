@@ -4,7 +4,6 @@ import com.example.demo.service.UserDao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -43,7 +42,7 @@ public class UserDaoTest {
 
 	@BeforeEach
 	public void setUp(GenericApplicationContext ctx){
-		this.user1 = new User("gumme1","Park1","springno1" ,Level.BASIC, 1 ,0 );
+		this.user1 = new User("gumme1","Park1","springno1" ,Level.BASIC, 50 ,0 );
 		this.user2 = new User("gumme2","Park2","springno2",Level.SILVER, 55,10 );
 		this.user3 = new User("gumme3","Park3","springno3",Level.GOLD, 100,40);
 	}
@@ -53,7 +52,7 @@ public class UserDaoTest {
 	
 	@Test
 	public void duplicateKey() {
-		Exception exception = assertThrows(DataAccessException.class, () -> {
+		assertThrows(DataAccessException.class, () -> {
 			dao.deleteAll();
 		User user = this.user1;
 		dao.add(user);

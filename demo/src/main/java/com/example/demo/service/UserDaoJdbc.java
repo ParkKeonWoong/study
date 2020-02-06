@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +10,6 @@ import javax.sql.DataSource;
 import com.example.demo.domain.User;
 import com.example.demo.domain.Level;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -101,7 +99,6 @@ public class UserDaoJdbc implements UserDao {
         
             @Override
             public int getBatchSize() {
-                // TODO Auto-generated method stub
                 return 1;
             }
         });
