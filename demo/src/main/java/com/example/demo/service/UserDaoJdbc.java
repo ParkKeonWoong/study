@@ -87,7 +87,25 @@ public class UserDaoJdbc implements UserDao {
     @Override   
     public List<User> getAll() {    
         return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
-}   
+}
+
+    @Override
+    public void update(User user) {
+        this.jdbcTemplate.batchUpdate("update users set level = ? where id = ?", new BatchPreparedStatementSetter(){
+        
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, user.getLevel().intValue());
+                ps.setString(2, user.getId());
+            }
+        
+            @Override
+            public int getBatchSize() {
+                // TODO Auto-generated method stub
+                return 1;
+            }
+        });
+    }
 
 
 }   

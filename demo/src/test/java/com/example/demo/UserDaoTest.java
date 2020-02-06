@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +43,9 @@ public class UserDaoTest {
 		this.user3 = new User("gumme3","Park3","springno3",Level.GOLD, 100,40);
 	}
 
+	
+    
+	
 	@Test
 	public void duplicateKey() {
 		Exception exception = assertThrows(DataAccessException.class, () -> {
