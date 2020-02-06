@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
 
 import com.example.demo.domain.*;
 
@@ -16,7 +17,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,10 +32,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
 
-
 	@Autowired
 	@Qualifier("userDao")
 	private UserDao dao;
+
+	@Autowired
+	DataSource dataSource;
 
 
 	@BeforeEach
@@ -44,15 +50,19 @@ public class UserDaoTest {
 
 	@Test
 	public void duplicateKey() {
-		Exception exception = assertThrows(DataAccessException.class, () -> {
-			dao.deleteAll();
-		User user = new User("1234", "name", "password");
-		dao.add(user);
-		dao.add(user);
-		}); 
 		
-		System.out.println(exception.getMessage());
-		assertTrue(exception.getMessage().contains("Duplicate entry"));
+		User user = new User("id", "name", "password");
+		dao.deleteAll();
+
+		try {
+			dao.add(user);
+			dao.add(user);
+		} catch (DuplicateKeyException ex) {
+			SQLException sqlEx = (SQLException) ex.getRootCause();
+			SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+			System.out.println(set.translate(null, null, sqlEx));
+			assertEquals(DuplicateKeyException.class,set.translate(null, null, sqlEx));
+		}
 
 		
 	}

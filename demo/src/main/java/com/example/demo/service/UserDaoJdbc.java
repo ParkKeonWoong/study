@@ -43,18 +43,18 @@ public class UserDaoJdbc implements UserDao {
     
     };
 
-    public int getCount() throws SQLException {
+    public int getCount() {
 
         int count = jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
         return count;
     }
 
 
-    public void deleteAll() throws SQLException {
+    public void deleteAll()  {
         this.jdbcTemplate.execute("delete from users");
     }
 
-    public void add(final User user) throws SQLException {
+    public void add(final User user)  {
         this.jdbcTemplate.batchUpdate("insert into users(id, name, password) values(?,?,?)", new BatchPreparedStatementSetter(){
         
             @Override
@@ -72,52 +72,8 @@ public class UserDaoJdbc implements UserDao {
 
     }
 
-    public User get(final String id) throws SQLException {
-        ResultSet rs = null;
-        Connection c = null;
-        PreparedStatement ps = null;
-        
-        try {  
-            c = dataSource.getConnection();
-            ps = c.prepareStatement("select * from users where id = ?");
-
-            ps.setString(1, id);
-
-            rs = ps.executeQuery();
-
-            if(rs.next()) {
-                this.user = new User(rs.getString("id"),rs.getString("name"),rs.getString("password"));
-            }
-            if (this.user == null) throw new EmptyResultDataAccessException(1);
-            return this.user;            
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }   
-
-        }   
-
-
-
-
-
+    public User get(final String id)  {
+        return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[] {id}, this.userMapper);
     }   
 
     @Override   

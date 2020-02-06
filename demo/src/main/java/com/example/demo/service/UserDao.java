@@ -10,9 +10,9 @@ import com.example.demo.domain.User;
  */
 public interface UserDao {
 
-    void add(User user) throws SQLException;
-    User get(String id) throws SQLException;
+    void add(User user) ;
+    User get(String id);
     List<User> getAll();
-    void deleteAll() throws SQLException;
-    int getCount() throws SQLException;
+    void deleteAll();
+    int getCount();
 }
