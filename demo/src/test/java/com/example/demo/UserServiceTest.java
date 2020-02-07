@@ -73,7 +73,7 @@ public class UserServiceTest {
             fail("TestUserServiceException");
         } catch (TestUserServiceException e) {
         }
-        checkLevel(users.get(1), Level.GOLD);
+        checkLevel(users.get(1), Level.SILVER);
     }
 
     @Test
@@ -112,9 +112,9 @@ public class UserServiceTest {
         userService.upgradeLevels();
 
         checkLevel(users.get(0), Level.BASIC);
-        checkLevel(users.get(1), Level.SILVER);
+        checkLevel(users.get(1), Level.GOLD);
         checkLevel(users.get(2), Level.GOLD);
-        checkLevel(users.get(3), Level.BASIC);
+        checkLevel(users.get(3), Level.SILVER);
         checkLevel(users.get(4), Level.GOLD);
         checkLevel(users.get(5), Level.GOLD);
 
