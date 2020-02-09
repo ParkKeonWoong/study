@@ -42,9 +42,9 @@ public class UserDaoTest {
 
 	@BeforeEach
 	public void setUp(GenericApplicationContext ctx){
-		this.user1 = new User("gumme1","Park1","springno1" ,Level.BASIC, 50 ,0 );
-		this.user2 = new User("gumme2","Park2","springno2",Level.SILVER, 55,10 );
-		this.user3 = new User("gumme3","Park3","springno3",Level.GOLD, 100,40);
+		this.user1 = new User("gumme1","Park1","springno1" ,Level.BASIC, 50 ,0 ,"rjsdndv@naver.com");
+		this.user2 = new User("gumme2","Park2","springno2",Level.SILVER, 55,10,"rjsdndv@naver.com" );
+		this.user3 = new User("gumme3","Park3","springno3",Level.GOLD, 100,40,"rjsdndv@naver.com");
 	}
 
 	

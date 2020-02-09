@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import com.example.demo.domain.Level;
 import com.example.demo.domain.User;
+import com.example.demo.service.MailSender;
 import com.example.demo.service.UserDao;
 import com.example.demo.service.UserService;
 import static com.example.demo.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
@@ -45,17 +46,20 @@ public class UserServiceTest {
     PlatformTransactionManager transactionManager;
 
     @Autowired
+    MailSender mailSender;
+
+    @Autowired
     UserDao userDao;
 
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-        new User("id1", "name1", "password1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1 , 0),
-        new User("id2", "name2", "password2", Level.SILVER, MIN_RECOMMEND_FOR_GOLD+1, MIN_RECOMMEND_FOR_GOLD+1),
-        new User("id3", "name3", "password3", Level.GOLD, MIN_LOGCOUNT_FOR_SILVER, 29),
-        new User("id4", "name4", "password4", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER+1, MIN_RECOMMEND_FOR_GOLD+1),
-        new User("id5", "name5", "password5", Level.SILVER, MIN_LOGCOUNT_FOR_SILVER+1, 31),
-        new User("id6", "name6", "password6", Level.GOLD, MIN_RECOMMEND_FOR_GOLD-1, 100)
+        new User("id1", "name1", "password1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1 , 0 ,"rjsdndv@naver.com"),
+        new User("id2", "name2", "password2", Level.SILVER, MIN_RECOMMEND_FOR_GOLD+1, MIN_RECOMMEND_FOR_GOLD+1,"rjsdndv@naver.com"),
+        new User("id3", "name3", "password3", Level.GOLD, MIN_LOGCOUNT_FOR_SILVER, 29,"rjsdndv@naver.com"),
+        new User("id4", "name4", "password4", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER+1, MIN_RECOMMEND_FOR_GOLD+1,"rjsdndv@naver.com"),
+        new User("id5", "name5", "password5", Level.SILVER, MIN_LOGCOUNT_FOR_SILVER+1, 31,"rjsdndv@naver.com"),
+        new User("id6", "name6", "password6", Level.GOLD, MIN_RECOMMEND_FOR_GOLD-1, 100,"rjsdndv@naver.com")
         );
     }
 
@@ -63,6 +67,7 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() throws Exception {
         UserService testUserService = new TestUserService(users.get(4).getId());
         testUserService.setUserDao(this.userDao);
+        testUserService.setMailSender(mailSender);
         testUserService.setTransactionManager(this.transactionManager);
         userDao.deleteAll();
         for (User user : users) {

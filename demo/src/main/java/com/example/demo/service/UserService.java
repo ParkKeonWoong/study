@@ -1,8 +1,17 @@
 package com.example.demo.service;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.sql.DataSource;
 
 import com.example.demo.domain.Level;
@@ -10,6 +19,7 @@ import com.example.demo.domain.User;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -26,6 +36,12 @@ public class UserService {
     UserDao userDao;
     DataSource dataSource;
     PlatformTransactionManager transactionManager;
+    private MailSender mailSender;
+
+
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -78,6 +94,17 @@ public class UserService {
     protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
+        sendUpgradeEmail(user);
+    }
+
+    private void sendUpgradeEmail(User user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setFrom("useradmin@ksug.org");
+        mailMessage.setSubject("upgrade 안내");
+        mailMessage.setText("사용자님의 등급이 " + user.getLevel().name());
+
+        this.mailSender.send(mailMessage);
     }
 
     private boolean canUpgradeLevel(User user) {

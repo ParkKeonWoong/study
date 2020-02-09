@@ -10,13 +10,15 @@
     <bean id="userService" class="com.example.demo.service.UserService">
         <property name="userDao" ref="userDao" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="mailSender" ref="mailSender" />
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-
+    <bean id="mailSender" class="com.example.demo.service.DummyMailSender">
+    </bean>
 
     <bean id="userDao" class="com.example.demo.service.UserDaoJdbc">
         <property name="dataSource" ref="dataSource" />

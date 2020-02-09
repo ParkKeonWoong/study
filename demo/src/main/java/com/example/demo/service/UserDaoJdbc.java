@@ -40,6 +40,7 @@ public class UserDaoJdbc implements UserDao {
                 user.setLevel(Level.valueOf(rs.getInt("level")));
                 user.setLogin(rs.getInt("login"));
                 user.setRecommend(rs.getInt("recommend"));
+                user.setEmail(rs.getString("email"));
                 return user;
 			}
     
@@ -57,7 +58,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public void add(final User user) {
-        this.jdbcTemplate.batchUpdate("insert into users(id, name, password, level, login, recommend) values(?,?,?,?,?,?)", new BatchPreparedStatementSetter(){
+        this.jdbcTemplate.batchUpdate("insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)", new BatchPreparedStatementSetter(){
         
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -67,6 +68,7 @@ public class UserDaoJdbc implements UserDao {
                 ps.setInt(4, user.getLevel().intValue());
                 ps.setInt(5, user.getLogin());
                 ps.setInt(6, user.getRecommend());
+                ps.setString(7, user.getEmail());
             }
         
             @Override
