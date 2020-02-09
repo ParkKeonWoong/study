@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import com.example.demo.domain.Level;
 import com.example.demo.domain.User;
 import com.example.demo.service.MailSender;
+import com.example.demo.service.MockMailSender;
 import com.example.demo.service.UserDao;
 import com.example.demo.service.UserService;
 import static com.example.demo.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -62,6 +64,35 @@ public class UserServiceTest {
         new User("id6", "name6", "password6", Level.GOLD, MIN_RECOMMEND_FOR_GOLD-1, 100,"rjsdndv@naver.com")
         );
     }
+
+    @Test
+    @DirtiesContext
+    public void upgradeLevels2() throws Exception {
+        userDao.deleteAll();
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
+
+        userService.upgradeLevels();
+
+        checkLevel(users.get(0), Level.BASIC);
+        checkLevel(users.get(1), Level.GOLD);
+        checkLevel(users.get(2), Level.GOLD);
+        checkLevel(users.get(3), Level.SILVER);
+        checkLevel(users.get(4), Level.GOLD);
+        checkLevel(users.get(5), Level.GOLD);
+
+        List<String> request = mockMailSender.getRequests();
+        assertEquals(request.size(),3);
+        assertEquals(request.get(0),users.get(1).getEmail());
+        assertEquals(request.get(1),users.get(3).getEmail());
+        
+
+    }
+    
 
     @Test
     public void upgradeAllOrNothing() throws Exception {
