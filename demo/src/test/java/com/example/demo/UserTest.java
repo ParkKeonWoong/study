@@ -9,7 +9,7 @@ import java.util.List;
 import com.example.demo.domain.Level;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserDao;
-import com.example.demo.service.UserService;
+import com.example.demo.service.UserServiceImpl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

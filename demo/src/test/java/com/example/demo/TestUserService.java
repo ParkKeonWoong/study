@@ -1,12 +1,12 @@
 package com.example.demo;
 
 import com.example.demo.domain.User;
-import com.example.demo.service.UserService;
+import com.example.demo.service.UserServiceImpl;
 
 /**
  * TestUserService
  */
-public class TestUserService extends UserService {
+public class TestUserService extends UserServiceImpl {
     private String id;
 
     TestUserService(String id) {

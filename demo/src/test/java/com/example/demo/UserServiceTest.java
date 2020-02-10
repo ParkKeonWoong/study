@@ -14,15 +14,17 @@ import com.example.demo.service.MailSender;
 import com.example.demo.service.MockMailSender;
 import com.example.demo.service.UserDao;
 import com.example.demo.service.UserService;
-import static com.example.demo.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.example.demo.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import com.example.demo.service.UserServiceImpl;
+import com.example.demo.service.UserServiceTx;
+
+import static com.example.demo.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.example.demo.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,7 +44,7 @@ public class UserServiceTest {
     DataSource dataSource;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     PlatformTransactionManager transactionManager;
@@ -52,6 +54,9 @@ public class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    UserService userService;
 
     @BeforeEach
     public void setUp() {
@@ -74,9 +79,9 @@ public class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
-        userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
         checkLevel(users.get(0), Level.BASIC);
         checkLevel(users.get(1), Level.GOLD);
@@ -96,10 +101,15 @@ public class UserServiceTest {
 
     @Test
     public void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(4).getId());
-        testUserService.setUserDao(this.userDao);
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender);
-        testUserService.setTransactionManager(this.transactionManager);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
+
+        
         userDao.deleteAll();
         for (User user : users) {
             userDao.add(user);
@@ -107,14 +117,21 @@ public class UserServiceTest {
 
         try {
             //transaction 사용
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
             //transaction 미사용
             //testUserService.upgradeLevelsWithoutTransaction();
             
             //fail("TestUserServiceException");
         } catch (TestUserServiceException e) {
         }
-        //checkLevel(users.get(1), Level.SILVER);
+        checkLevel(users.get(0), Level.BASIC);
+        checkLevel(users.get(1), Level.SILVER);
+        checkLevel(users.get(2), Level.GOLD);
+        checkLevel(users.get(3), Level.BASIC);
+        checkLevel(users.get(4), Level.SILVER);
+        checkLevel(users.get(5), Level.GOLD);
+
     }
 
     @Test
