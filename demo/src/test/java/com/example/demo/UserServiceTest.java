@@ -12,6 +12,7 @@ import com.example.demo.domain.Level;
 import com.example.demo.domain.User;
 import com.example.demo.service.MailSender;
 import com.example.demo.service.MockMailSender;
+import com.example.demo.service.MockUserDao;
 import com.example.demo.service.UserDao;
 import com.example.demo.service.UserService;
 import com.example.demo.service.UserServiceImpl;
@@ -69,6 +70,32 @@ public class UserServiceTest {
         new User("id6", "name6", "password6", Level.GOLD, MIN_RECOMMEND_FOR_GOLD-1, 100,"rjsdndv@naver.com")
         );
     }
+
+    @Test
+    public void upgradeLevels3() throws Exception {
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.upgradeLevels();
+
+        List<User> updated = mockUserDao.getUpdated();
+        assertEquals(updated.size(),3);
+        checkUserAndLevel(updated.get(0),"id2",Level.GOLD);
+        checkUserAndLevel(updated.get(1),"id4",Level.SILVER);
+
+        List<String> request = mockMailSender.getRequests();
+        assertEquals(request.size(),3);
+        assertEquals(request.get(0),users.get(1).getEmail());
+        assertEquals(request.get(1),users.get(3).getEmail());
+
+    }
+
+    
 
     @Test
     @DirtiesContext
@@ -183,6 +210,11 @@ public class UserServiceTest {
     public void checkLevel(User user, Level expectedLevel) {
         User userUpdate = userDao.get(user.getId());
         assertEquals(userUpdate.getLevel(),expectedLevel);
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+        assertEquals(updated.getId(),expectedId);
+        assertEquals(updated.getLevel(),expectedLevel);
     }
 
 
